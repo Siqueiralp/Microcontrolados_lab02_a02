@@ -1,0 +1,494 @@
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 6
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	counter
+  20              		.section	.bss.counter,"aw",%nobits
+  23              	counter:
+  24 0000 00       		.space	1
+  25              		.global	pulse_delay
+  26              		.section	.bss.pulse_delay,"aw",%nobits
+  27              		.align	2
+  30              	pulse_delay:
+  31 0000 00000000 		.space	4
+  32              		.global	pulse_start
+  33              		.section	.bss.pulse_start,"aw",%nobits
+  34              		.align	2
+  37              	pulse_start:
+  38 0000 00000000 		.space	4
+  39              		.section	.text.main,"ax",%progbits
+  40              		.align	1
+  41              		.global	main
+  42              		.syntax unified
+  43              		.thumb
+  44              		.thumb_func
+  46              	main:
+  47              	.LFB130:
+  48              		.file 1 "Core/Src/main.c"
+   1:Core/Src/main.c **** #include "stm32f4xx_hal.h"
+   2:Core/Src/main.c **** #include "main.h"
+   3:Core/Src/main.c **** #include "button.h"
+   4:Core/Src/main.c **** uint8_t counter = 0;
+   5:Core/Src/main.c **** uint32_t pulse_delay;
+   6:Core/Src/main.c **** uint32_t pulse_start = 0;
+   7:Core/Src/main.c **** void SystemClock_Config(void);
+   8:Core/Src/main.c **** static void MX_GPIO_Init(void);
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** int main(void){
+  49              		.loc 1 10 15
+  50              		.cfi_startproc
+  51              		@ args = 0, pretend = 0, frame = 0
+  52              		@ frame_needed = 1, uses_anonymous_args = 0
+  53 0000 80B5     		push	{r7, lr}
+  54              	.LCFI0:
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 2
+
+
+  55              		.cfi_def_cfa_offset 8
+  56              		.cfi_offset 7, -8
+  57              		.cfi_offset 14, -4
+  58 0002 00AF     		add	r7, sp, #0
+  59              	.LCFI1:
+  60              		.cfi_def_cfa_register 7
+  11:Core/Src/main.c ****     HAL_Init();
+  61              		.loc 1 11 5
+  62 0004 FFF7FEFF 		bl	HAL_Init
+  12:Core/Src/main.c ****     SystemClock_Config();
+  63              		.loc 1 12 5
+  64 0008 FFF7FEFF 		bl	SystemClock_Config
+  13:Core/Src/main.c ****     MX_GPIO_Init();
+  65              		.loc 1 13 5
+  66 000c FFF7FEFF 		bl	MX_GPIO_Init
+  14:Core/Src/main.c ****     HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13); // LED PLACA
+  67              		.loc 1 14 5
+  68 0010 4FF40051 		mov	r1, #8192
+  69 0014 2848     		ldr	r0, .L8
+  70 0016 FFF7FEFF 		bl	HAL_GPIO_TogglePin
+  71              	.L7:
+  15:Core/Src/main.c ****     
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c ****     while (1){
+  18:Core/Src/main.c ****     //Aguarda o botão ser pressionado
+  19:Core/Src/main.c ****        if (button_release(GPIOA, GPIO_PIN_0,RESET)){
+  72              		.loc 1 19 12
+  73 001a 0022     		movs	r2, #0
+  74 001c 0121     		movs	r1, #1
+  75 001e 2748     		ldr	r0, .L8+4
+  76 0020 FFF7FEFF 		bl	button_release
+  77 0024 0346     		mov	r3, r0
+  78              		.loc 1 19 11
+  79 0026 002B     		cmp	r3, #0
+  80 0028 F7D0     		beq	.L7
+  20:Core/Src/main.c ****         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET); // ACIONA O TRIGGER
+  81              		.loc 1 20 9
+  82 002a 0122     		movs	r2, #1
+  83 002c 4FF40071 		mov	r1, #512
+  84 0030 2248     		ldr	r0, .L8+4
+  85 0032 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  21:Core/Src/main.c ****         HAL_Delay(120);
+  86              		.loc 1 21 9
+  87 0036 7820     		movs	r0, #120
+  88 0038 FFF7FEFF 		bl	HAL_Delay
+  22:Core/Src/main.c ****         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+  89              		.loc 1 22 9
+  90 003c 0022     		movs	r2, #0
+  91 003e 4FF40071 		mov	r1, #512
+  92 0042 1E48     		ldr	r0, .L8+4
+  93 0044 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  23:Core/Src/main.c ****         HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET); // LED PADRÃO SEMPRE ACESO
+  94              		.loc 1 23 9
+  95 0048 0122     		movs	r2, #1
+  96 004a 4FF40041 		mov	r1, #32768
+  97 004e 1C48     		ldr	r0, .L8+8
+  98 0050 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 3
+
+
+  24:Core/Src/main.c ****         while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == GPIO_PIN_RESET){ // AGUARDA PIN ECHO IR A 1
+  99              		.loc 1 24 15
+ 100 0054 04E0     		b	.L3
+ 101              	.L4:
+  25:Core/Src/main.c ****         pulse_start = HAL_GetTick();
+ 102              		.loc 1 25 23
+ 103 0056 FFF7FEFF 		bl	HAL_GetTick
+ 104 005a 0346     		mov	r3, r0
+ 105              		.loc 1 25 21
+ 106 005c 194A     		ldr	r2, .L8+12
+ 107 005e 1360     		str	r3, [r2]
+ 108              	.L3:
+  24:Core/Src/main.c ****         while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == GPIO_PIN_RESET){ // AGUARDA PIN ECHO IR A 1
+ 109              		.loc 1 24 16
+ 110 0060 0221     		movs	r1, #2
+ 111 0062 1648     		ldr	r0, .L8+4
+ 112 0064 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 113 0068 0346     		mov	r3, r0
+  24:Core/Src/main.c ****         while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == GPIO_PIN_RESET){ // AGUARDA PIN ECHO IR A 1
+ 114              		.loc 1 24 52
+ 115 006a 002B     		cmp	r3, #0
+ 116 006c F3D0     		beq	.L4
+  26:Core/Src/main.c ****         }
+  27:Core/Src/main.c ****         while(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_1) == GPIO_PIN_SET){
+ 117              		.loc 1 27 14
+ 118 006e 00BF     		nop
+ 119              	.L5:
+ 120              		.loc 1 27 15 discriminator 1
+ 121 0070 0221     		movs	r1, #2
+ 122 0072 1248     		ldr	r0, .L8+4
+ 123 0074 FFF7FEFF 		bl	HAL_GPIO_ReadPin
+ 124 0078 0346     		mov	r3, r0
+ 125              		.loc 1 27 51 discriminator 1
+ 126 007a 012B     		cmp	r3, #1
+ 127 007c F8D0     		beq	.L5
+  28:Core/Src/main.c **** 
+  29:Core/Src/main.c ****         }
+  30:Core/Src/main.c ****         if ((HAL_GetTick() - pulse_start) < 10){
+ 128              		.loc 1 30 14
+ 129 007e FFF7FEFF 		bl	HAL_GetTick
+ 130 0082 0246     		mov	r2, r0
+ 131              		.loc 1 30 28
+ 132 0084 0F4B     		ldr	r3, .L8+12
+ 133 0086 1B68     		ldr	r3, [r3]
+ 134 0088 D31A     		subs	r3, r2, r3
+ 135              		.loc 1 30 12
+ 136 008a 092B     		cmp	r3, #9
+ 137 008c 0CD8     		bhi	.L6
+  31:Core/Src/main.c ****           HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET); // LED A8 DE PROXIMIDADE
+ 138              		.loc 1 31 11
+ 139 008e 0122     		movs	r2, #1
+ 140 0090 4FF48071 		mov	r1, #256
+ 141 0094 0948     		ldr	r0, .L8+4
+ 142 0096 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  32:Core/Src/main.c ****           counter++;
+ 143              		.loc 1 32 18
+ 144 009a 0B4B     		ldr	r3, .L8+16
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 4
+
+
+ 145 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 146 009e 0133     		adds	r3, r3, #1
+ 147 00a0 DAB2     		uxtb	r2, r3
+ 148 00a2 094B     		ldr	r3, .L8+16
+ 149 00a4 1A70     		strb	r2, [r3]
+ 150 00a6 B8E7     		b	.L7
+ 151              	.L6:
+  33:Core/Src/main.c ****         }
+  34:Core/Src/main.c ****         else {
+  35:Core/Src/main.c ****           HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET); // LED A8 DE PROXIMIDADE
+ 152              		.loc 1 35 11
+ 153 00a8 0022     		movs	r2, #0
+ 154 00aa 4FF48071 		mov	r1, #256
+ 155 00ae 0348     		ldr	r0, .L8+4
+ 156 00b0 FFF7FEFF 		bl	HAL_GPIO_WritePin
+  19:Core/Src/main.c ****         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET); // ACIONA O TRIGGER
+ 157              		.loc 1 19 11
+ 158 00b4 B1E7     		b	.L7
+ 159              	.L9:
+ 160 00b6 00BF     		.align	2
+ 161              	.L8:
+ 162 00b8 00080240 		.word	1073874944
+ 163 00bc 00000240 		.word	1073872896
+ 164 00c0 00040240 		.word	1073873920
+ 165 00c4 00000000 		.word	pulse_start
+ 166 00c8 00000000 		.word	counter
+ 167              		.cfi_endproc
+ 168              	.LFE130:
+ 170              		.section	.text.MX_GPIO_Init,"ax",%progbits
+ 171              		.align	1
+ 172              		.syntax unified
+ 173              		.thumb
+ 174              		.thumb_func
+ 176              	MX_GPIO_Init:
+ 177              	.LFB131:
+  36:Core/Src/main.c ****         }
+  37:Core/Src/main.c ****       }
+  38:Core/Src/main.c ****     }
+  39:Core/Src/main.c **** }
+  40:Core/Src/main.c **** static void MX_GPIO_Init(void) {
+ 178              		.loc 1 40 32
+ 179              		.cfi_startproc
+ 180              		@ args = 0, pretend = 0, frame = 32
+ 181              		@ frame_needed = 1, uses_anonymous_args = 0
+ 182 0000 80B5     		push	{r7, lr}
+ 183              	.LCFI2:
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 7, -8
+ 186              		.cfi_offset 14, -4
+ 187 0002 88B0     		sub	sp, sp, #32
+ 188              	.LCFI3:
+ 189              		.cfi_def_cfa_offset 40
+ 190 0004 00AF     		add	r7, sp, #0
+ 191              	.LCFI4:
+ 192              		.cfi_def_cfa_register 7
+ 193              	.LBB2:
+  41:Core/Src/main.c **** 
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 5
+
+
+  42:Core/Src/main.c ****     __HAL_RCC_GPIOB_CLK_ENABLE();
+ 194              		.loc 1 42 5
+ 195 0006 0023     		movs	r3, #0
+ 196 0008 BB60     		str	r3, [r7, #8]
+ 197 000a 364B     		ldr	r3, .L11
+ 198 000c 1B6B     		ldr	r3, [r3, #48]
+ 199 000e 354A     		ldr	r2, .L11
+ 200 0010 43F00203 		orr	r3, r3, #2
+ 201 0014 1363     		str	r3, [r2, #48]
+ 202 0016 334B     		ldr	r3, .L11
+ 203 0018 1B6B     		ldr	r3, [r3, #48]
+ 204 001a 03F00203 		and	r3, r3, #2
+ 205 001e BB60     		str	r3, [r7, #8]
+ 206 0020 BB68     		ldr	r3, [r7, #8]
+ 207              	.LBE2:
+  43:Core/Src/main.c ****     GPIO_InitTypeDef GPIO_InitStruct = {0};
+ 208              		.loc 1 43 22
+ 209 0022 07F10C03 		add	r3, r7, #12
+ 210 0026 0022     		movs	r2, #0
+ 211 0028 1A60     		str	r2, [r3]
+ 212 002a 5A60     		str	r2, [r3, #4]
+ 213 002c 9A60     		str	r2, [r3, #8]
+ 214 002e DA60     		str	r2, [r3, #12]
+ 215 0030 1A61     		str	r2, [r3, #16]
+  44:Core/Src/main.c ****     
+  45:Core/Src/main.c ****     GPIO_InitStruct.Pin = GPIO_PIN_15|GPIO_PIN_14|GPIO_PIN_13|GPIO_PIN_13|GPIO_PIN_12;
+ 216              		.loc 1 45 25
+ 217 0032 4FF47043 		mov	r3, #61440
+ 218 0036 FB60     		str	r3, [r7, #12]
+  46:Core/Src/main.c ****     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 219              		.loc 1 46 26
+ 220 0038 0123     		movs	r3, #1
+ 221 003a 3B61     		str	r3, [r7, #16]
+  47:Core/Src/main.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 222              		.loc 1 47 26
+ 223 003c 0023     		movs	r3, #0
+ 224 003e 7B61     		str	r3, [r7, #20]
+  48:Core/Src/main.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 225              		.loc 1 48 27
+ 226 0040 0023     		movs	r3, #0
+ 227 0042 BB61     		str	r3, [r7, #24]
+  49:Core/Src/main.c ****     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 228              		.loc 1 49 5
+ 229 0044 07F10C03 		add	r3, r7, #12
+ 230 0048 1946     		mov	r1, r3
+ 231 004a 2748     		ldr	r0, .L11+4
+ 232 004c FFF7FEFF 		bl	HAL_GPIO_Init
+ 233              	.LBB3:
+  50:Core/Src/main.c **** 
+  51:Core/Src/main.c ****     __HAL_RCC_GPIOA_CLK_ENABLE();
+ 234              		.loc 1 51 5
+ 235 0050 0023     		movs	r3, #0
+ 236 0052 7B60     		str	r3, [r7, #4]
+ 237 0054 234B     		ldr	r3, .L11
+ 238 0056 1B6B     		ldr	r3, [r3, #48]
+ 239 0058 224A     		ldr	r2, .L11
+ 240 005a 43F00103 		orr	r3, r3, #1
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 6
+
+
+ 241 005e 1363     		str	r3, [r2, #48]
+ 242 0060 204B     		ldr	r3, .L11
+ 243 0062 1B6B     		ldr	r3, [r3, #48]
+ 244 0064 03F00103 		and	r3, r3, #1
+ 245 0068 7B60     		str	r3, [r7, #4]
+ 246 006a 7B68     		ldr	r3, [r7, #4]
+ 247              	.LBE3:
+  52:Core/Src/main.c ****     GPIO_InitStruct.Pin = GPIO_PIN_1 | GPIO_PIN_0; // ECHO = A1, BOTÃO = A0
+ 248              		.loc 1 52 25
+ 249 006c 0323     		movs	r3, #3
+ 250 006e FB60     		str	r3, [r7, #12]
+  53:Core/Src/main.c ****     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+ 251              		.loc 1 53 26
+ 252 0070 0023     		movs	r3, #0
+ 253 0072 3B61     		str	r3, [r7, #16]
+  54:Core/Src/main.c ****     GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+ 254              		.loc 1 54 26
+ 255 0074 0223     		movs	r3, #2
+ 256 0076 7B61     		str	r3, [r7, #20]
+  55:Core/Src/main.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 257              		.loc 1 55 5
+ 258 0078 07F10C03 		add	r3, r7, #12
+ 259 007c 1946     		mov	r1, r3
+ 260 007e 1B48     		ldr	r0, .L11+8
+ 261 0080 FFF7FEFF 		bl	HAL_GPIO_Init
+  56:Core/Src/main.c **** 
+  57:Core/Src/main.c ****     GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+ 262              		.loc 1 57 25
+ 263 0084 4FF44073 		mov	r3, #768
+ 264 0088 FB60     		str	r3, [r7, #12]
+  58:Core/Src/main.c ****     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 265              		.loc 1 58 26
+ 266 008a 0123     		movs	r3, #1
+ 267 008c 3B61     		str	r3, [r7, #16]
+  59:Core/Src/main.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 268              		.loc 1 59 26
+ 269 008e 0023     		movs	r3, #0
+ 270 0090 7B61     		str	r3, [r7, #20]
+  60:Core/Src/main.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 271              		.loc 1 60 27
+ 272 0092 0023     		movs	r3, #0
+ 273 0094 BB61     		str	r3, [r7, #24]
+  61:Core/Src/main.c ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 274              		.loc 1 61 5
+ 275 0096 07F10C03 		add	r3, r7, #12
+ 276 009a 1946     		mov	r1, r3
+ 277 009c 1348     		ldr	r0, .L11+8
+ 278 009e FFF7FEFF 		bl	HAL_GPIO_Init
+ 279              	.LBB4:
+  62:Core/Src/main.c **** 
+  63:Core/Src/main.c ****     // GPIO Initialization for on-board LED (GPIOC_PIN13)
+  64:Core/Src/main.c ****     __HAL_RCC_GPIOC_CLK_ENABLE();
+ 280              		.loc 1 64 5
+ 281 00a2 0023     		movs	r3, #0
+ 282 00a4 3B60     		str	r3, [r7]
+ 283 00a6 0F4B     		ldr	r3, .L11
+ 284 00a8 1B6B     		ldr	r3, [r3, #48]
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 7
+
+
+ 285 00aa 0E4A     		ldr	r2, .L11
+ 286 00ac 43F00403 		orr	r3, r3, #4
+ 287 00b0 1363     		str	r3, [r2, #48]
+ 288 00b2 0C4B     		ldr	r3, .L11
+ 289 00b4 1B6B     		ldr	r3, [r3, #48]
+ 290 00b6 03F00403 		and	r3, r3, #4
+ 291 00ba 3B60     		str	r3, [r7]
+ 292 00bc 3B68     		ldr	r3, [r7]
+ 293              	.LBE4:
+  65:Core/Src/main.c ****     GPIO_InitStruct.Pin = GPIO_PIN_13;
+ 294              		.loc 1 65 25
+ 295 00be 4FF40053 		mov	r3, #8192
+ 296 00c2 FB60     		str	r3, [r7, #12]
+  66:Core/Src/main.c ****     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+ 297              		.loc 1 66 26
+ 298 00c4 0123     		movs	r3, #1
+ 299 00c6 3B61     		str	r3, [r7, #16]
+  67:Core/Src/main.c ****     GPIO_InitStruct.Pull = GPIO_NOPULL;
+ 300              		.loc 1 67 26
+ 301 00c8 0023     		movs	r3, #0
+ 302 00ca 7B61     		str	r3, [r7, #20]
+  68:Core/Src/main.c ****     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+ 303              		.loc 1 68 27
+ 304 00cc 0023     		movs	r3, #0
+ 305 00ce BB61     		str	r3, [r7, #24]
+  69:Core/Src/main.c ****     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+ 306              		.loc 1 69 5
+ 307 00d0 07F10C03 		add	r3, r7, #12
+ 308 00d4 1946     		mov	r1, r3
+ 309 00d6 0648     		ldr	r0, .L11+12
+ 310 00d8 FFF7FEFF 		bl	HAL_GPIO_Init
+  70:Core/Src/main.c **** }
+ 311              		.loc 1 70 1
+ 312 00dc 00BF     		nop
+ 313 00de 2037     		adds	r7, r7, #32
+ 314              	.LCFI5:
+ 315              		.cfi_def_cfa_offset 8
+ 316 00e0 BD46     		mov	sp, r7
+ 317              	.LCFI6:
+ 318              		.cfi_def_cfa_register 13
+ 319              		@ sp needed
+ 320 00e2 80BD     		pop	{r7, pc}
+ 321              	.L12:
+ 322              		.align	2
+ 323              	.L11:
+ 324 00e4 00380240 		.word	1073887232
+ 325 00e8 00040240 		.word	1073873920
+ 326 00ec 00000240 		.word	1073872896
+ 327 00f0 00080240 		.word	1073874944
+ 328              		.cfi_endproc
+ 329              	.LFE131:
+ 331              		.section	.text.SystemClock_Config,"ax",%progbits
+ 332              		.align	1
+ 333              		.global	SystemClock_Config
+ 334              		.syntax unified
+ 335              		.thumb
+ 336              		.thumb_func
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 8
+
+
+ 338              	SystemClock_Config:
+ 339              	.LFB132:
+  71:Core/Src/main.c **** 
+  72:Core/Src/main.c **** // System Clock Configuration (auto-generated by STM32CubeMX)
+  73:Core/Src/main.c **** void SystemClock_Config(void) {
+ 340              		.loc 1 73 31
+ 341              		.cfi_startproc
+ 342              		@ args = 0, pretend = 0, frame = 0
+ 343              		@ frame_needed = 1, uses_anonymous_args = 0
+ 344              		@ link register save eliminated.
+ 345 0000 80B4     		push	{r7}
+ 346              	.LCFI7:
+ 347              		.cfi_def_cfa_offset 4
+ 348              		.cfi_offset 7, -4
+ 349 0002 00AF     		add	r7, sp, #0
+ 350              	.LCFI8:
+ 351              		.cfi_def_cfa_register 7
+  74:Core/Src/main.c ****     // System Clock Configuration code
+  75:Core/Src/main.c **** }
+ 352              		.loc 1 75 1
+ 353 0004 00BF     		nop
+ 354 0006 BD46     		mov	sp, r7
+ 355              	.LCFI9:
+ 356              		.cfi_def_cfa_register 13
+ 357              		@ sp needed
+ 358 0008 5DF8047B 		ldr	r7, [sp], #4
+ 359              	.LCFI10:
+ 360              		.cfi_restore 7
+ 361              		.cfi_def_cfa_offset 0
+ 362 000c 7047     		bx	lr
+ 363              		.cfi_endproc
+ 364              	.LFE132:
+ 366              		.text
+ 367              	.Letext0:
+ 368              		.file 2 "c:\\dev\\micro\\tools\\arm-gnu-toolchain-11.3.rel1-mingw-w64-i686-arm-none-eabi\\arm-none
+ 369              		.file 3 "c:\\dev\\micro\\tools\\arm-gnu-toolchain-11.3.rel1-mingw-w64-i686-arm-none-eabi\\arm-none
+ 370              		.file 4 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f411xe.h"
+ 371              		.file 5 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 372              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 373              		.file 7 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 374              		.file 8 "Core/Inc/stm32f4xx_hal.h"
+ 375              		.file 9 "Core/Src/button.h"
+ARM GAS  C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:23     .bss.counter:00000000 counter
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:24     .bss.counter:00000000 $d
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:30     .bss.pulse_delay:00000000 pulse_delay
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:27     .bss.pulse_delay:00000000 $d
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:37     .bss.pulse_start:00000000 pulse_start
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:34     .bss.pulse_start:00000000 $d
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:40     .text.main:00000000 $t
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:46     .text.main:00000000 main
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:338    .text.SystemClock_Config:00000000 SystemClock_Config
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:176    .text.MX_GPIO_Init:00000000 MX_GPIO_Init
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:162    .text.main:000000b8 $d
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:171    .text.MX_GPIO_Init:00000000 $t
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:324    .text.MX_GPIO_Init:000000e4 $d
+C:\Users\stryk\AppData\Local\Temp\ccxCaqf0.s:332    .text.SystemClock_Config:00000000 $t
+
+UNDEFINED SYMBOLS
+HAL_Init
+HAL_GPIO_TogglePin
+button_release
+HAL_GPIO_WritePin
+HAL_Delay
+HAL_GetTick
+HAL_GPIO_ReadPin
+HAL_GPIO_Init
